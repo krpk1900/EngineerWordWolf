@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
   root 'views#top'
   get 'share',   to: 'views#share'
   get 'waiting', to: 'views#waiting'
