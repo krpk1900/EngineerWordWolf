@@ -1,31 +1,36 @@
 class ViewsController < ApplicationController
-  def top; end
+  before_action :set_uuid, except: :generate_uuid
 
-  def share; end
+  def generate_uuid
+    @uuid = SecureRandom.uuid
+    redirect_to("http://localhost:3000/top?uuid=#{@uuid}")
+  end
+
+  def top;end
+
+  def share;end
 
   def waiting
     @connection_count = ActionCable
                       .server.open_connections_statistics
                       .map { |con| con[:subscriptions]
-                      .map { |sub| JSON.parse(sub)["url"] } }
+                      .map { |sub| JSON.parse(sub)["uuid"] } }
                       .flatten
-                      .select { |url| url == 'http://localhost:3000/waiting' } # todo: uuidを含めたURLにする
+                      .select { |uuid| uuid == @uuid }
                       .size
-
-    p "----------------ViewsController------------------"
-    p ActionCable.server.open_connections_statistics.map { |con| con[:subscriptions].map { |sub| JSON.parse(sub)["url"] } }.flatten
-    p "@connection_count = #{@connection_count}"
-    p "----------------------------------"
 
     ActionCable.server.broadcast('room_channel', {connection_count: @connection_count})
   end
 
-  def play; end
+  def play;end
 
-  def vote; end
+  def vote;end
 
-  def result; end
+  def result;end
+
+  private
+
+  def set_uuid
+    @uuid = params[:uuid]
+  end
 end
-
-# ActionCable.server.open_connections_statistics
-# ActionCable.server.open_connections_statistics.map { |con| con[:subscriptions].map { |sub| JSON.parse(sub)["url"] } }.flatten.select { |url| url == 'http://localhost:3000/waiting' }.size

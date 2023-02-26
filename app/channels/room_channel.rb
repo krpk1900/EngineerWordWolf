@@ -1,8 +1,5 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
-    p '========================='
-    p 'subscribedされた'
-    p '========================='
     stream_from "room_channel"
     send_connection_count
   end
@@ -14,19 +11,16 @@ class RoomChannel < ApplicationCable::Channel
   private
 
   def send_connection_count
+    params_uuid = params[:uuid]
+
     connection_count = ActionCable
                     .server.open_connections_statistics
                     .map { |con| con[:subscriptions]
-                    .map { |sub| JSON.parse(sub)["url"] } }
+                    .map { |sub| JSON.parse(sub)["uuid"] } }
                     .flatten
-                    .select { |url| url == 'http://localhost:3000/waiting' } # todo: uuidを含めたURLにする
+                    .select { |uuid| uuid == params_uuid }
                     .size
 
     ActionCable.server.broadcast('room_channel', {connection_count: connection_count})
-
-    p "-----------------send_connection_count-----------------"
-    p ActionCable.server.open_connections_statistics.map { |con| con[:subscriptions].map { |sub| JSON.parse(sub)["url"] } }.flatten
-    p "@connection_count = #{connection_count}"
-    p "----------------------------------"
   end
 end

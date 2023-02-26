@@ -1,11 +1,14 @@
 import consumer from "channels/consumer"
 
+// uuidを取得
+const url = new URL(window.location.href);
+const params = new URLSearchParams(url.search);
+const uuid = params.get('uuid')
+
 const appRoom = consumer.subscriptions.create(
   {
     channel: "RoomChannel",
-    // ここを変えることでURLごとの接続数にする
-    // url: location.href
-    url: 'http://localhost:3000/waiting'
+    uuid: uuid
   },
   {
     connected() {
