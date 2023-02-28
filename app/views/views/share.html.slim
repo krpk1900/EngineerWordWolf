@@ -1,3 +1,10 @@
 h1 URL発行画面（/share）
 
+input type='text' value="#{@uuid}" readonly=true
+br
+
+p ニックネーム
+input type='text'
+br
+
 = link_to('入室', "/waiting?uuid=#{@uuid}")

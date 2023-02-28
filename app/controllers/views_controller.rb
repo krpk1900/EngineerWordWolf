@@ -2,7 +2,7 @@ class ViewsController < ApplicationController
   before_action :set_uuid, except: :generate_uuid
 
   def generate_uuid
-    @uuid = SecureRandom.uuid
+    @uuid = SecureRandom.alphanumeric(10)
     redirect_to("http://localhost:3000/top?uuid=#{@uuid}")
   end
 

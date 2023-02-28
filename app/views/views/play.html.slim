@@ -1,3 +1,7 @@
 h1 お題画面（/play/:uuid）
 
+p あなたのお題は
+input type='text' value="一番好きなプログラミング言語" readonly=true
+br
+
 = link_to('投票する', "/vote?uuid=#{@uuid}")
